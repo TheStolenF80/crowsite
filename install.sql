@@ -1,0 +1,23 @@
+﻿CREATE DATABASE IF NOT EXISTS `crow_club` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `crow_club`;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  login VARCHAR(64) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  pass VARCHAR(255) NOT NULL,
+  is_admin TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS bookings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  resource VARCHAR(100) DEFAULT 'pc',
+  status ENUM('active','cancelled','completed') DEFAULT 'active',
+  notes VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE INDEX idx_bookings_user ON bookings(user_id);
